@@ -7,7 +7,11 @@
     >
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
-      <v-toolbar-title>SportMeetup</v-toolbar-title>
+      <v-toolbar-title>
+          <v-btn light rounded to="/"><v-icon>{{basketballIcon}}</v-icon>
+          SportMeetup</v-btn>
+          
+        </v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-list nav dense>
@@ -35,6 +39,7 @@ import {
   mdiAccount,
   mdiAccountPlus,
   mdiLoginVariant,
+  mdiBasketball
 } from "@mdi/js";
 export default {
   name: "AppNavigation",
@@ -53,6 +58,7 @@ export default {
         { icon: mdiAccountPlus, title: "Sign up", link: "/signup" },
         { icon: mdiLoginVariant, title: "Sign in", link: "/signin" },
       ],
+      basketballIcon : mdiBasketball
     };
   },
 };
