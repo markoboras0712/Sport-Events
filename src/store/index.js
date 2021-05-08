@@ -71,6 +71,25 @@ export default new Vuex.Store({
       .catch(error=> {
         console.log(error);
       })
+    },
+    signIn(context,payload){
+      return axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyARrWz81xZH_I9urxA6MSdin5_wysYwOk4' , {
+        email : payload.email,
+        password: payload.password,
+        returnSecureToken : true
+      })
+      .then(result => {
+        console.log(result);
+        const newUser = {
+          id: result.data.localId,
+          registeredMeetups: []
+        }
+        context.commit('ADD_USER',newUser)
+        
+      })
+      .catch(error=> {
+        console.log(error);
+      })
     }
     
   },
