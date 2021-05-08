@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from 'axios';
 import 'core-js';
 Vue.use(Vuex);
 
@@ -27,15 +28,16 @@ export default new Vuex.Store({
         address: 'Ulica Kralja Petra Svacica 1c'
       },
     ],
-    user: {
-      id: "asdasdlkasdlasčd",
-      registeredMeetups: ["aadsfhbkhlk1241"],
-    },
+    user: null,
   },
   mutations: {
     CREATE_MEETUP(state,payload){
       state.meetups.push(payload);
+    },
+    ADD_USER(state,payload){
+      state.user = payload;
     }
+    
   },
   actions: {
     createMeetup(context,payload){
@@ -50,7 +52,27 @@ export default new Vuex.Store({
         id: 'newmeet'
       }
       context.commit('CREATE_MEETUP', meetup);
+    },
+    signUp(context,payload){
+      return axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyARrWz81xZH_I9urxA6MSdin5_wysYwOk4' , {
+        email : payload.email,
+        password: payload.password,
+        returnSecureToken : true
+      })
+      .then(result => {
+        console.log(result);
+        const newUser = {
+          id: result.data.localId,
+          registeredMeetups: []
+        }
+        context.commit('ADD_USER',newUser)
+        
+      })
+      .catch(error=> {
+        console.log(error);
+      })
     }
+    
   },
   getters: {
     meetups (state) {
@@ -68,6 +90,9 @@ export default new Vuex.Store({
           return meetup.id === meetupId
         })
       }
+    },
+    user(state){
+      return state.user;
     }
     
   },

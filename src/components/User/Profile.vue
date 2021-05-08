@@ -1,5 +1,12 @@
 <template>
   <div>
-    <p>Profile Page</p>
+    <p>User profile</p>
   </div>
 </template>
+
+
+<script>
+export default {
+  
+}
+</script>
