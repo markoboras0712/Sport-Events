@@ -8,7 +8,8 @@
             height="200px"
           ></v-img>
 
-          <v-card-title> {{meetup.title}} {{meetup.id}}</v-card-title>
+          <v-card-title> {{meetup.title}} </v-card-title>
+          <v-card-title>{{meetup.date | date}}</v-card-title>
 
           <v-card-subtitle> {{meetup.address}} </v-card-subtitle>
 

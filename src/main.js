@@ -5,8 +5,11 @@ import store from "./store";
 import vuetify from './plugins/vuetify';
 import "core-js";
 import "regenerator-runtime/runtime";
+import DateFilter from './filters/filter';
 
 Vue.config.productionTip = false;
+
+Vue.filter('date', DateFilter);
 
 new Vue({
   router,

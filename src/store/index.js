@@ -11,7 +11,7 @@ export default new Vuex.Store({
           "https://images.adsttc.com/media/images/5012/a894/28ba/0d14/7d00/0218/large_jpg/stringio.jpg?1414022708",
         id: "afajfjadfaadfa323",
         title: "Meetup in Arena Zagreb",
-        date:'2021-15-05',
+        date: new Date(),
         country: 'Croatia',
         city: 'Zagreb',
         address: 'Ulica Kralja Petra Svacica 1c'
@@ -21,7 +21,7 @@ export default new Vuex.Store({
           "https://upload.wikimedia.org/wikipedia/commons/7/7b/Dvorana_Gradski_vrt_9.jpg",
         id: "aadsfhbkhlk1241",
         title: "Meetup in Gradski Vrt Osijek",
-        date:'2021-5-05',
+        date:  new Date(),
         country: 'Croatia',
         city: 'Osijek',
         address: 'Ulica Kralja Petra Svacica 1c'
@@ -32,8 +32,26 @@ export default new Vuex.Store({
       registeredMeetups: ["aadsfhbkhlk1241"],
     },
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    CREATE_MEETUP(state,payload){
+      state.meetups.push(payload);
+    }
+  },
+  actions: {
+    createMeetup(context,payload){
+      const meetup = {
+        title : payload.title,
+        country : payload.country,
+        city: payload.city,
+        address: payload.address,
+        imageUrl : payload.imageUrl,
+        description: payload.description,
+        date : payload.date,
+        id: 'newmeet'
+      }
+      context.commit('CREATE_MEETUP', meetup);
+    }
+  },
   getters: {
     meetups (state) {
       return state.meetups;

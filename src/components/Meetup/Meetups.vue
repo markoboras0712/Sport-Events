@@ -17,13 +17,13 @@
             <div class="text-left">
               <div><v-icon>{{badges.town}}</v-icon>{{meetup.city}}</div>
               <div><v-icon>{{badges.address}}</v-icon>{{meetup.address}}</div>
-              <div><v-icon>{{badges.date}}</v-icon>{{meetup.date}}</div>
+              <div><v-icon>{{badges.date}}</v-icon>{{meetup.date | date}}</div>
             </div>
             
           </v-card-text>
 
           <v-card-actions>
-            <v-btn light rounded color="blue" :to="'/meetups/' + meetup.id"><v-icon>{{badges.explore}}</v-icon> Explore {{meetup.id}}</v-btn>
+            <v-btn light rounded color="blue" :to="'/meetups/' + meetup.id"><v-icon>{{badges.explore}}</v-icon> Explore</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
