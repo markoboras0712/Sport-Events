@@ -9,7 +9,7 @@
       <v-spacer></v-spacer>
       <v-toolbar-title>
           <v-btn light rounded to="/"><v-icon>{{basketballIcon}}</v-icon>
-          SportMeetup</v-btn>
+          SportEvent</v-btn>
           
         </v-toolbar-title>
     </v-app-bar>

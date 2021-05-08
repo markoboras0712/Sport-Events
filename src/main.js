@@ -3,7 +3,8 @@ import App from './App.vue';
 import router from "./router";
 import store from "./store";
 import vuetify from './plugins/vuetify';
-import "@babel/polyfill";
+import "core-js";
+import "regenerator-runtime/runtime";
 
 Vue.config.productionTip = false;
 

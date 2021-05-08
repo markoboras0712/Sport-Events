@@ -42,13 +42,10 @@
 
 export default {
   name: "Home",
-  data() {
-    return {
-      meetups: [
-          { imageUrl: 'https://images.adsttc.com/media/images/5012/a894/28ba/0d14/7d00/0218/large_jpg/stringio.jpg?1414022708', id: 'afajfjadfaadfa323', title: 'Meetup in Arena Zagreb' },
-          { imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Dvorana_Gradski_vrt_9.jpg', id: 'aadsfhbkhlk1241', title: 'Meetup in Gradski Vrt Osijek' }
-        ]
-    };
+  computed: {
+    meetups(){
+      return this.$store.getters.featuredMeetups;
+    }
   },
   methods: {
       onLoadMeetup (id) {
