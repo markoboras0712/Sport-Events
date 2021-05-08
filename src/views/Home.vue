@@ -16,7 +16,7 @@
           <template v-slot:next="{ on, attrs }">
             <v-btn color="info" v-bind="attrs" v-on="on">Next event</v-btn>
           </template>
-          <v-carousel-item v-for="meetup in meetups" :src="meetup.imageUrl" :key="meetup.id">
+          <v-carousel-item v-for="meetup in meetups" :src="meetup.imageUrl" :key="meetup.id" @click="onLoadMeetup(meetup.id)" >
             
               <v-row class="fill-height" align="center" justify="center">
                 <div class="title">{{ meetup.title }} </div>
@@ -27,17 +27,19 @@
     </v-layout>
     <v-layout row wrap class="mt-10">
       <v-flex xs12 sm6>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/7stqLIRLBBg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/7stqLIRLBBg" allowfullscreen></iframe>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex xs12 sm6>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/LTHoS9d-EaI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/LTHoS9d-EaI"  allowfullscreen></iframe>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+
+
 export default {
   name: "Home",
   data() {
@@ -48,6 +50,12 @@ export default {
         ]
     };
   },
+  methods: {
+      onLoadMeetup (id) {
+        this.$router.push('/meetups/' + id)
+      }
+    }
+  
 };
 </script>
 

@@ -1,11 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Meetups from '@/components/Meetup/Meetups';
-import CreateMeetup from '@/components/Meetup/CreateMeetup';
-import Profile from '@/components/User/Profile';
-import Signup from '@/components/User/Signup';
-import Signin from '@/components/User/Signin';
+import Meetups from '../components/Meetup/Meetups.vue';
+import CreateMeetup from '../components/Meetup/CreateMeetup.vue';
+import Profile from '../components/User/Profile.vue';
+import Signup from '../components/User/Signup.vue';
+import Signin from '../components/User/Signin.vue';
+import Meetup from '../components/Meetup/Meetup.vue';
 Vue.use(VueRouter);
 
 const routes = [
@@ -23,6 +24,11 @@ const routes = [
     path: '/meetup/new',
     name: 'CreateMeetup',
     component: CreateMeetup
+  },
+  {
+    path:'/meetups/:id',
+    name: 'Meetup',
+    component: Meetup
   },
   {
     path: '/profile',
