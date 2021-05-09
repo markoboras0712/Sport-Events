@@ -11,6 +11,7 @@
         <v-btn light rounded to="/"
           ><v-icon>{{ basketballIcon }}</v-icon> SportEvent</v-btn
         >
+        <v-btn v-if="userIsAuthenticated" @click="logout" class="primary">Logout</v-btn>
       </v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
@@ -76,6 +77,13 @@ export default {
       return menuItems;
     },
   },
+  methods:{
+    logout(){
+      this.$store.dispatch('logout');
+      
+      
+    }
+  }
 };
 </script>
 

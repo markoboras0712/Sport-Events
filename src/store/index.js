@@ -19,6 +19,7 @@ export default new Vuex.Store({
       },
     ],
     user: null,
+    token: null
     
   },
   mutations: {
@@ -30,6 +31,12 @@ export default new Vuex.Store({
     },
     LOAD_MEETUPS(state,payload){
       state.meetups = payload;
+    },
+    SET_TOKEN(state,token){
+      state.token = token;
+    },
+    CLEAR_TOKEN(state){
+      state.token = null;
     }
     
     
@@ -79,8 +86,9 @@ export default new Vuex.Store({
         returnSecureToken : true
       })
       .then(result => {
-        console.log(result);
-        
+        console.log(result.data);
+        context.commit('SET_TOKEN', result.data.idToken );
+        localStorage.setItem("token", result.data.idToken);
         const newUser = {
           id: result.data.localId,
           registeredMeetups: []
@@ -101,8 +109,8 @@ export default new Vuex.Store({
         returnSecureToken : true
       })
       .then(result => {
-        
-        console.log(result);
+        context.commit('SET_TOKEN', result.data.idToken );
+        localStorage.setItem("token", result.data.idToken);
         const newUser = {
           id: result.data.localId,
           registeredMeetups: []
@@ -115,6 +123,12 @@ export default new Vuex.Store({
         console.log(error);
       })
     },
+    logout(context){
+      context.commit('CLEAR_TOKEN');
+      localStorage.removeItem("token");
+      context.commit('ADD_USER', null);
+    }
+    
     
     
   },
