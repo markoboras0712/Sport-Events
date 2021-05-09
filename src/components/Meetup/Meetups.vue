@@ -51,6 +51,9 @@ export default {
       return this.$store.getters.meetups;
     }
   },
+  created(){
+      this.$store.dispatch('loadMeetups');
+    }
   
 }
 </script>

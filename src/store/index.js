@@ -29,6 +29,7 @@ export default new Vuex.Store({
       },
     ],
     user: null,
+    
   },
   mutations: {
     CREATE_MEETUP(state,payload){
@@ -36,7 +37,11 @@ export default new Vuex.Store({
     },
     ADD_USER(state,payload){
       state.user = payload;
+    },
+    LOAD_MEETUPS(state,payload){
+      state.meetups = payload;
     }
+    
     
   },
   actions: {
@@ -49,11 +54,33 @@ export default new Vuex.Store({
         imageUrl : payload.imageUrl,
         description: payload.description,
         date : payload.date,
-        id: 'newmeet'
+        
       }
-      context.commit('CREATE_MEETUP', meetup);
+      return axios.post('https://ivica-events-default-rtdb.firebaseio.com/meetups.json', meetup)
+      .then(data => {
+          console.log(data);
+          context.commit('CREATE_MEETUP', {...meetup, id: data.data.name});
+      })
+      .catch(error=> {
+        console.log(error);
+      })
+      
+    },
+    loadMeetups(context){
+      return axios.get('https://ivica-events-default-rtdb.firebaseio.com/meetups.json')
+      .then(data => {
+          const fetchedMeetups = [];
+          for(const key in data.data){
+            fetchedMeetups.push({...data.data[key], id: key})
+          }
+          context.commit('LOAD_MEETUPS',fetchedMeetups);
+      })
+      .catch(error=> {
+        console.log(error);
+      })
     },
     signUp(context,payload){
+      
       return axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyARrWz81xZH_I9urxA6MSdin5_wysYwOk4' , {
         email : payload.email,
         password: payload.password,
@@ -61,6 +88,7 @@ export default new Vuex.Store({
       })
       .then(result => {
         console.log(result);
+        
         const newUser = {
           id: result.data.localId,
           registeredMeetups: []
@@ -69,16 +97,19 @@ export default new Vuex.Store({
         
       })
       .catch(error=> {
+        
         console.log(error);
       })
     },
     signIn(context,payload){
+      ;
       return axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyARrWz81xZH_I9urxA6MSdin5_wysYwOk4' , {
         email : payload.email,
         password: payload.password,
         returnSecureToken : true
       })
       .then(result => {
+        
         console.log(result);
         const newUser = {
           id: result.data.localId,
@@ -88,9 +119,11 @@ export default new Vuex.Store({
         
       })
       .catch(error=> {
+        
         console.log(error);
       })
-    }
+    },
+    
     
   },
   getters: {
@@ -112,7 +145,7 @@ export default new Vuex.Store({
     },
     user(state){
       return state.user;
-    }
+    },
     
   },
 });

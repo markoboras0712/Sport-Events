@@ -25,15 +25,6 @@
         </v-carousel>
       </v-flex>
     </v-layout>
-    <v-layout row wrap class="mt-10">
-      <v-flex xs12 sm6>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/7stqLIRLBBg" allowfullscreen></iframe>
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex xs12 sm6>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/LTHoS9d-EaI"  allowfullscreen></iframe>
-      </v-flex>
-    </v-layout>
   </v-container>
 </template>
 
@@ -51,6 +42,9 @@ export default {
       onLoadMeetup (id) {
         this.$router.push('/meetups/' + id)
       }
+    },
+    created(){
+      this.$store.dispatch('loadMeetups');
     }
   
 };

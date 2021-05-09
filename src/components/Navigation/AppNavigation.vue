@@ -8,10 +8,10 @@
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
       <v-toolbar-title>
-          <v-btn light rounded to="/"><v-icon>{{basketballIcon}}</v-icon>
-          SportEvent</v-btn>
-          
-        </v-toolbar-title>
+        <v-btn light rounded to="/"
+          ><v-icon>{{ basketballIcon }}</v-icon> SportEvent</v-btn
+        >
+      </v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-list nav dense>
@@ -39,7 +39,7 @@ import {
   mdiAccount,
   mdiAccountPlus,
   mdiLoginVariant,
-  mdiBasketball
+  mdiBasketball,
 } from "@mdi/js";
 export default {
   name: "AppNavigation",
@@ -47,19 +47,34 @@ export default {
     return {
       drawer: false,
       group: null,
-      menuItems: [
-        { icon: mdiViewListOutline, title: "View Meetups", link: "/meetups" },
-        {
-          icon: mdiMapMarkerPlus,
-          title: "Organize Meetup",
-          link: "/meetup/new",
-        },
-        { icon: mdiAccount, title: "Profile", link: "/profile" },
+      basketballIcon: mdiBasketball,
+    };
+  },
+  computed: {
+    userIsAuthenticated() {
+      return (
+        this.$store.getters.user !== null &&
+        this.$store.getters.user !== undefined
+      );
+    },
+    menuItems() {
+      let menuItems = [
         { icon: mdiAccountPlus, title: "Sign up", link: "/signup" },
         { icon: mdiLoginVariant, title: "Sign in", link: "/signin" },
-      ],
-      basketballIcon : mdiBasketball
-    };
+      ];
+      if (this.userIsAuthenticated) {
+        menuItems = [
+          { icon: mdiViewListOutline, title: "View Meetups", link: "/meetups" },
+          {
+            icon: mdiMapMarkerPlus,
+            title: "Organize Meetup",
+            link: "/meetup/new",
+          },
+          { icon: mdiAccount, title: "Profile", link: "/profile" },
+        ];
+      }
+      return menuItems;
+    },
   },
 };
 </script>
