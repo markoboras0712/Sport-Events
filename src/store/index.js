@@ -9,23 +9,13 @@ export default new Vuex.Store({
     meetups: [
       {
         imageUrl:
-          "https://images.adsttc.com/media/images/5012/a894/28ba/0d14/7d00/0218/large_jpg/stringio.jpg?1414022708",
-        id: "afajfjadfaadfa323",
-        title: "Meetup in Arena Zagreb",
+          "",
+        id: "",
+        title: "",
         date: new Date(),
-        country: 'Croatia',
-        city: 'Zagreb',
-        address: 'Ulica Kralja Petra Svacica 1c'
-      },
-      {
-        imageUrl:
-          "https://upload.wikimedia.org/wikipedia/commons/7/7b/Dvorana_Gradski_vrt_9.jpg",
-        id: "aadsfhbkhlk1241",
-        title: "Meetup in Gradski Vrt Osijek",
-        date:  new Date(),
-        country: 'Croatia',
-        city: 'Osijek',
-        address: 'Ulica Kralja Petra Svacica 1c'
+        country: '',
+        city: '',
+        address: ''
       },
     ],
     user: null,
@@ -54,11 +44,12 @@ export default new Vuex.Store({
         imageUrl : payload.imageUrl,
         description: payload.description,
         date : payload.date,
-        
+        creatorId : context.getters.user.id
+
       }
       return axios.post('https://ivica-events-default-rtdb.firebaseio.com/meetups.json', meetup)
       .then(data => {
-          console.log(data);
+          
           context.commit('CREATE_MEETUP', {...meetup, id: data.data.name});
       })
       .catch(error=> {
@@ -69,6 +60,7 @@ export default new Vuex.Store({
     loadMeetups(context){
       return axios.get('https://ivica-events-default-rtdb.firebaseio.com/meetups.json')
       .then(data => {
+        
           const fetchedMeetups = [];
           for(const key in data.data){
             fetchedMeetups.push({...data.data[key], id: key})
