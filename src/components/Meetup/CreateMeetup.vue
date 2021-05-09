@@ -63,6 +63,7 @@
               <img :src="imageUrl" height="150">
             </v-flex>
           </v-layout>
+          
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-text-field

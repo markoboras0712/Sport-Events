@@ -1,17 +1,3 @@
 <template>
-  <div>
-    <p>{{user}}</p>
-  </div>
+  <div>Profile</div>
 </template>
-
-
-<script>
-export default {
-  computed:{
-    user(){
-      console.log(this.$store.getters.user);
-      return this.$store.getters.user;
-    }
-  }
-}
-</script>
