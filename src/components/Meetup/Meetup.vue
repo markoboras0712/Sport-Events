@@ -1,5 +1,16 @@
 <template>
   <v-container mt-15>
+    <v-layout row wrap >
+      <v-flex xs12 class="text-center">
+        <v-progress-circular
+          indeterminate
+          color="purple"
+          :width="7"
+          :size="100"
+          v-if="loading"
+        ></v-progress-circular>
+      </v-flex>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
         <v-card class="mx-auto">
@@ -23,7 +34,7 @@
               Register
               </v-btn>
             <v-spacer></v-spacer>
-            <v-btn class="primary" :to="'/meetups/edit-meetup/' + id">
+            <v-btn v-if="userIsCreator" class="primary" :to="'/meetups/edit-meetup/' + id">
             Edit Meetup
             </v-btn>
             <div>

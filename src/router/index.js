@@ -15,12 +15,14 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter: AuthGuard
   },
   {
     path: '/meetups',
     name: 'Meetups',
-    component: Meetups
+    component: Meetups,
+    beforeEnter: AuthGuard
   },
   {
     path: '/meetup/new',
@@ -32,13 +34,15 @@ const routes = [
     path:'/meetups/:id',
     name: 'Meetup',
     props:true,
-    component: Meetup
+    component: Meetup,
+    beforeEnter: AuthGuard
   },
   {
     path:'/meetups/edit-meetup/:id',
     name:'Edit Meetup',
     props:true,
-    component: EditMeetup
+    component: EditMeetup,
+    beforeEnter: AuthGuard
   },
   {
     path: '/profile',
