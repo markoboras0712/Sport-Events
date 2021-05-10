@@ -3,15 +3,13 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card class="mx-auto">
-          <v-img
-            :src="meetup.imageUrl"
-            height="200px"
-          ></v-img>
+          <v-img :src="meetup.imageUrl" height="200px"></v-img>
+          
+          <v-card-title> {{ meetup.title }} </v-card-title>
+          
+          <v-card-title>{{ meetup.date | date }}</v-card-title>
 
-          <v-card-title> {{meetup.title}} </v-card-title>
-          <v-card-title>{{meetup.date | date}}</v-card-title>
-
-          <v-card-subtitle> {{meetup.address}} </v-card-subtitle>
+          <v-card-subtitle> {{ meetup.address }} </v-card-subtitle>
 
           <v-card-actions>
             <v-btn class="primary" text> Description </v-btn>
@@ -20,8 +18,17 @@
                 show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
             </v-btn>
+            <v-btn class="primary">
+              <v-icon>{{ registerIcon }}</v-icon>
+              Register
+              </v-btn>
             <v-spacer></v-spacer>
-            <v-btn class="primary"><v-icon>{{registerIcon}}</v-icon>Register</v-btn>
+            <v-btn class="primary" :to="'/meetups/edit-meetup/' + id">
+            Edit Meetup
+            </v-btn>
+            <div>
+                
+            </div>
             
           </v-card-actions>
 
@@ -30,7 +37,7 @@
               <v-divider></v-divider>
 
               <v-card-text>
-                {{meetup.description}}
+                {{ meetup.description }}
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -41,19 +48,37 @@
 </template>
 
 <script>
-import { mdiAccountPlus } from '@mdi/js';
+import { mdiAccountPlus } from "@mdi/js";
+
 export default {
-  props:['id'],
+  props: ["id"],
   data() {
     return {
       show: false,
-      registerIcon: mdiAccountPlus
+      registerIcon: mdiAccountPlus,
     };
   },
-  computed:{
-    meetup(){
+  computed: {
+    meetup() {
       return this.$store.getters.meetup(this.id);
+    },
+    loading() {
+      return this.$store.getters.loading;
+    },
+    userIsCreator() {
+      if(!this.userIsAuthenticated){
+        return false;
+      }
+      return this.$store.getters.user.id === this.meetup.creatorId;
+    },
+    userIsAuthenticated(){
+      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
     }
+  },
+  methods:{
+     onLoadMeetup (id) {
+        this.$router.push('/meetups/edit-meetup/' + id)
+      }
   }
 };
 </script>

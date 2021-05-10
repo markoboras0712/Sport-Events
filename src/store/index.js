@@ -20,7 +20,7 @@ export default new Vuex.Store({
     ],
     user: null,
     token: null,
-    
+    loading: false
     
   },
   mutations: {
@@ -39,7 +39,13 @@ export default new Vuex.Store({
     CLEAR_TOKEN(state){
       state.token = null;
     },
-    
+    SET_LOADING(state,payload){
+      state.loading = payload
+    },
+    EDIT_MEETUP(state,payload){
+      const index = state.meetups.findIndex(meet => meet.id === payload.id)
+      state.meetups[index] = payload;
+    }
     
     
   },
@@ -79,6 +85,30 @@ export default new Vuex.Store({
       .catch(error=> {
         console.log(error);
       })
+    },
+    editMeetup(context,payload){
+      context.commit('SET_LOADING', true);
+      const editedMeetup = {
+        title : payload.title,
+        country : payload.country,
+        city: payload.city,
+        address: payload.address,
+        date : payload.date,
+        description: payload.description,
+        creatorId : payload.creatorId,
+        imageUrl: payload.imageUrl
+      }
+      return axios.put('https://ivica-events-default-rtdb.firebaseio.com/meetups/' + payload.id + '.json', editedMeetup)
+      .then(data => {
+          console.log(data);
+          console.log('context', context);
+          context.commit('EDIT_MEETUP', payload);
+      })
+      .catch(error=> {
+        console.log(error);
+      })
+      
+
     },
     signUp(context,payload){
       
@@ -154,6 +184,9 @@ export default new Vuex.Store({
     user(state){
       return state.user;
     },
+    loading(state){
+      return state.loading;
+    }
    
     
   },

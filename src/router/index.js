@@ -8,6 +8,7 @@ import Signup from '../components/User/Signup.vue';
 import Signin from '../components/User/Signin.vue';
 import Meetup from '../components/Meetup/Meetup.vue';
 import AuthGuard from './auth-guard';
+import EditMeetup from '../components/Meetup/EditMeetup.vue';
 Vue.use(VueRouter);
 
 const routes = [
@@ -32,6 +33,12 @@ const routes = [
     name: 'Meetup',
     props:true,
     component: Meetup
+  },
+  {
+    path:'/meetups/edit-meetup/:id',
+    name:'Edit Meetup',
+    props:true,
+    component: EditMeetup
   },
   {
     path: '/profile',

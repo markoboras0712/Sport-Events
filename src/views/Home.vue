@@ -35,7 +35,7 @@ export default {
   name: "Home",
   computed: {
     meetups(){
-      return this.$store.getters.featuredMeetups;
+      return this.$store.getters.meetups;
       
     }
   },
@@ -44,7 +44,7 @@ export default {
         this.$router.push('/meetups/' + id)
       }
     },
-    created(){
+    updated(){
       this.$store.dispatch('loadMeetups');
     }
   
