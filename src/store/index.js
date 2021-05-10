@@ -19,7 +19,8 @@ export default new Vuex.Store({
       },
     ],
     user: null,
-    token: null
+    token: null,
+    
     
   },
   mutations: {
@@ -37,7 +38,8 @@ export default new Vuex.Store({
     },
     CLEAR_TOKEN(state){
       state.token = null;
-    }
+    },
+    
     
     
   },
@@ -48,15 +50,15 @@ export default new Vuex.Store({
         country : payload.country,
         city: payload.city,
         address: payload.address,
-        imageUrl : payload.imageUrl,
         description: payload.description,
         date : payload.date,
-        creatorId : context.getters.user.id
-
+        creatorId : context.getters.user.id,
+        imageUrl: payload.imageUrl
       }
+      
       return axios.post('https://ivica-events-default-rtdb.firebaseio.com/meetups.json', meetup)
       .then(data => {
-          
+          console.log(data);
           context.commit('CREATE_MEETUP', {...meetup, id: data.data.name});
       })
       .catch(error=> {
@@ -152,6 +154,7 @@ export default new Vuex.Store({
     user(state){
       return state.user;
     },
+   
     
   },
 });

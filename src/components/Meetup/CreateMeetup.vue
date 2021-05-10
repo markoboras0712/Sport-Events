@@ -15,7 +15,8 @@
                 label="Title"
                 id="title"
                 v-model="title"
-                required></v-text-field>
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -25,7 +26,8 @@
                 label="Country"
                 id="country"
                 v-model="country"
-                required></v-text-field>
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -35,7 +37,8 @@
                 label="City"
                 id="city"
                 v-model="city"
-                required></v-text-field>
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -45,25 +48,25 @@
                 label="Address"
                 id="address"
                 v-model="address"
-                required></v-text-field>
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <v-text-field
-                name="imageUrl"
-                label="Image URL"
-                id="image-url"
-                v-model="imageUrl"
-                required></v-text-field>
+              <input type="file" @change="previewImage" accept="image/*" />
+              <v-btn raised class="primary" @click="onUpload"
+                >Upload Image</v-btn
+              >
+              <p></p>
             </v-flex>
           </v-layout>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <img :src="imageUrl" height="150">
+              <img :src="imageUrl" height="150" />
             </v-flex>
           </v-layout>
-          
+
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-text-field
@@ -72,26 +75,27 @@
                 id="description"
                 multi-line
                 v-model="description"
-                required></v-text-field>
+                required
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout row justify="center">
             <v-flex xs12 sm6 offset-sm3>
-              <v-date-picker v-model="date">{{date}}</v-date-picker>
-              
+              <v-date-picker v-model="date">{{ date }}</v-date-picker>
             </v-flex>
           </v-layout>
           <v-layout row justify="center">
             <v-flex xs12 sm6 offset-sm3>
-              <v-time-picker format="ampm" v-model="time">{{time}}</v-time-picker>
+              <v-time-picker format="ampm" v-model="time">{{
+                time
+              }}</v-time-picker>
             </v-flex>
           </v-layout>
           <v-layout row mt-10>
             <v-flex xs12 sm6 offset-sm3>
-              <v-btn
-                class="primary"
-                :disabled="!formIsValid"
-                type="submit">Create Meetup</v-btn>
+              <v-btn class="primary" :disabled="!formIsValid" type="submit"
+                >Create Meetup</v-btn
+              >
             </v-flex>
           </v-layout>
         </form>
@@ -100,62 +104,81 @@
   </v-container>
 </template>
 
-
 <script>
+import firebase from "firebase";
 export default {
-  data(){
+  data() {
     return {
-      title:'',
-      country:'',
-      city:'',
-      address:'',
-      imageUrl: '',
-      description: '',
+      title: "",
+      country: "",
+      city: "",
+      address: "",
+      imageUrl: "",
+      description: "",
       date: new Date().toISOString().substr(0, 10),
       time: new Date(),
-      
-    }
+      image: null,
+    };
   },
-  computed:{
-    formIsValid(){
-      return this.title !== '' &&
-      this.country !== '' && 
-      this.city !== '' &&
-      this.address !== '' && 
-      this.imageUrl !== '' &&
-      this.description !== ''
+  computed: {
+    formIsValid() {
+      return (
+        this.title !== "" &&
+        this.country !== "" &&
+        this.city !== "" &&
+        this.address !== "" &&
+        this.description !== ""
+      );
     },
-    dateTime(){
+    dateTime() {
       const date = new Date(this.date);
-      if(typeof this.time === 'string'){
-          let hours = this.time.match(/^(\d+)/)[1]
-          const minutes = this.time.match(/:(\d+)/)[1]
-          date.setHours(hours)
-          date.setMinutes(minutes)
-      }else{
+      if (typeof this.time === "string") {
+        let hours = this.time.match(/^(\d+)/)[1];
+        const minutes = this.time.match(/:(\d+)/)[1];
+        date.setHours(hours);
+        date.setMinutes(minutes);
+      } else {
         date.setHours(this.time.getHours());
         date.setMinutes(this.time.setHours());
       }
       return date;
-    }
+    },
   },
-  methods:{
-    onCreateMeetup(){
-      if(!this.formIsValid){
+  methods: {
+    onUpload() {},
+    previewImage(event) {
+      this.picture = null;
+      this.imageData = event.target.files[0];
+    },
+    onCreateMeetup() {
+      if (!this.formIsValid) {
         return;
       }
-      const meetupData = {
-        title: this.title,
-        country: this.country,
-        city: this.city,
-        address: this.address,
-        imageUrl : this.imageUrl,
-        description : this.description,
-        date: this.dateTime
-      }
-      this.$store.dispatch('createMeetup', meetupData);
-      this.$router.push('/meetups')
-    }
-  }
-}
+
+      const storage = firebase.storage();
+      const uploadTask = storage
+        .ref(`${this.imageData.name}`)
+        .put(this.imageData);
+
+      uploadTask.then((snapshot) => {
+        snapshot.ref.getDownloadURL().then((url) => {
+          
+          const meetupData = {
+            title: this.title,
+            country: this.country,
+            city: this.city,
+            address: this.address,
+            imageUrl: url,
+            description: this.description,
+            date: this.dateTime,
+          };
+          this.$store.dispatch("createMeetup", meetupData);
+          this.$router.push("/meetups");
+          console.log("link", url);
+        });
+      });
+
+    },
+  },
+};
 </script>
