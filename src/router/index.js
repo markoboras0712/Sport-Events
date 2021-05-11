@@ -9,6 +9,7 @@ import Signin from '../components/User/Signin.vue';
 import Meetup from '../components/Meetup/Meetup.vue';
 import AuthGuard from './auth-guard';
 import EditMeetup from '../components/Meetup/EditMeetup.vue';
+import EditMeetupDateTime from '../components/Meetup/EditMeetupDateTime.vue';
 Vue.use(VueRouter);
 
 const routes = [
@@ -43,6 +44,13 @@ const routes = [
     props:true,
     component: EditMeetup,
     beforeEnter: AuthGuard
+  },
+  {
+    path:'/meetups/edit-meetupdatetime/:id',
+    name:'Edit Date Time',
+    props:true,
+    component: EditMeetupDateTime,
+    
   },
   {
     path: '/profile',

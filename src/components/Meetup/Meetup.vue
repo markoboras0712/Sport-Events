@@ -37,9 +37,8 @@
             <v-btn v-if="userIsCreator" class="primary" :to="'/meetups/edit-meetup/' + id">
             Edit Meetup
             </v-btn>
-            <div>
-                
-            </div>
+            <v-btn v-if="userIsCreator" class="primary" :to="'/meetups/edit-meetupdatetime/' +id">
+            Edit Date and Time</v-btn>
             
           </v-card-actions>
 

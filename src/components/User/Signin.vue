@@ -57,7 +57,10 @@ export default {
       this.$store.dispatch('signIn', {
         email : this.email,
         password: this.password
+      }).then( () => {
+        this.$router.push('/meetups');
       })
+      
     
     },
     onDismissed () {
