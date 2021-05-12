@@ -51,6 +51,19 @@ export default new Vuex.Store({
     CLEAR_ERROR(state) {
       state.error = null;
     },
+    REGISTER_USER(state,payload){
+      const id = payload.id;
+      if(state.user.registeredMeetups.findIndex(meetup => meetup.id === id) >= 0){
+        return ;
+      }
+      state.user.registeredMeetups.push(id);
+      state.user.fbKeys[id] = payload.fbKey;
+    },
+    UNREGISTER_USER(state,payload){
+      const registeredMeetups = state.user.registeredMeetups;
+      registeredMeetups.splice(registeredMeetups.findIndex(meetup => meetup.id === payload),1)
+      Reflect.deleteProperty(state.user.fbKeys,payload)
+    }
   },
   actions: {
     createMeetup(context, payload) {
@@ -76,6 +89,66 @@ export default new Vuex.Store({
         .catch((error) => {
           console.log(error);
         });
+    },
+    registerUser(context,payload){
+      context.commit('SET_LOADING',true);
+      const user = context.getters.user;
+      return axios.post( 'https://ivica-events-default-rtdb.firebaseio.com/users/' + user.id + '/registrations.json' , {
+          id: payload
+        } )
+        .then((data) => {
+          
+          context.commit('SET_LOADING',false);
+          context.commit('REGISTER_USER', {id: payload , fbKey : data.data.name})
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
+    unRegisterUser(context,payload){
+      context.commit('SET_LOADING',true);
+      const user = context.getters.user;
+      if(!user.fbKeys){
+        return ;
+      }
+      const fbKey = user.fbKeys[payload]
+      return axios.delete('https://ivica-events-default-rtdb.firebaseio.com/users/' + user.id + `/registrations/${fbKey}.json`)
+      .then((data) => {
+        console.log(data);
+        context.commit('SET_LOADING',false);
+        context.commit('UNREGISTER_USER', payload);
+      })
+      .catch((error) => {
+        console.log(error);
+        context.commit('SET_LOADING',error);
+      })
+    },
+    getUserRegistrations(context){
+      context.commit('SET_LOADING');
+      return axios.get('https://ivica-events-default-rtdb.firebaseio.com/users/'  + context.getters.user.id + '/registrations.json')
+      .then((result)=> {
+        const fetchedMeetups = [];
+        const fbKeys = {};
+        console.log(result.data);
+          for (const key in result.data) {
+            fetchedMeetups.push(result.data[key].id);
+            
+            fbKeys[result.data[key].id] =  key
+            console.log('Keyevi',fbKeys)
+          }
+          const updatedUser = {
+            id : context.getters.user.id,
+            registeredMeetups : fetchedMeetups,
+            fbKeys : fbKeys
+          };
+          console.log('updatedUser', updatedUser);
+          context.commit('SET_LOADING',false);
+          context.commit('ADD_USER', updatedUser);
+          
+       
+      }).then((error) => {
+        console.log(error);
+      })
     },
     loadMeetups(context) {
       context.commit('SET_LOADING',true);
@@ -115,7 +188,7 @@ export default new Vuex.Store({
         )
         .then((data) => {
           console.log(data);
-          console.log("context", context);
+          
           context.commit('SET_LOADING',false);
           context.commit("EDIT_MEETUP", payload);
         })
@@ -137,12 +210,13 @@ export default new Vuex.Store({
         )
         .then((result) => {
           context.commit('SET_LOADING',false);
-          console.log(result.data);
+        
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
+            fbKeys : {}
           };
           context.commit("ADD_USER", newUser);
         })
@@ -168,10 +242,13 @@ export default new Vuex.Store({
           context.commit('SET_LOADING',false);
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
+         
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
+            fbKeys : {}
           };
+          
           context.commit("ADD_USER", newUser);
         })
         .catch((error) => {
@@ -194,9 +271,7 @@ export default new Vuex.Store({
       return state.meetups;
     },
 
-    featuredMeetups(state, getters) {
-      return getters.meetups.slice(0, 5);
-    },
+  
 
     meetup(state) {
       return (meetupId) => {

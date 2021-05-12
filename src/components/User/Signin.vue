@@ -59,6 +59,7 @@ export default {
         password: this.password
       }).then( () => {
         this.$router.push('/meetups');
+        this.$store.dispatch('getUserRegistrations');
       })
       
     

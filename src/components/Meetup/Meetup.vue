@@ -1,6 +1,6 @@
 <template>
   <v-container mt-15>
-    <v-layout row wrap >
+    <v-layout row wrap>
       <v-flex xs12 class="text-center">
         <v-progress-circular
           indeterminate
@@ -15,9 +15,9 @@
       <v-flex xs12>
         <v-card class="mx-auto">
           <v-img :src="meetup.imageUrl" height="200px"></v-img>
-          
+
           <v-card-title> {{ meetup.title }} </v-card-title>
-          
+
           <v-card-title>{{ meetup.date | date }}</v-card-title>
 
           <v-card-subtitle> {{ meetup.address }} </v-card-subtitle>
@@ -29,17 +29,25 @@
                 show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
             </v-btn>
-            <v-btn class="primary">
+            <v-btn class="primary" @click="registerUser">
               <v-icon>{{ registerIcon }}</v-icon>
-              Register
-              </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn v-if="userIsCreator" class="primary" :to="'/meetups/edit-meetup/' + id">
-            Edit Meetup
+              {{ userIsRegistered ? "Unregister" : "Register" }}
             </v-btn>
-            <v-btn v-if="userIsCreator" class="primary" :to="'/meetups/edit-meetupdatetime/' +id">
-            Edit Date and Time</v-btn>
-            
+            <v-spacer></v-spacer>
+            <v-btn
+              v-if="userIsCreator"
+              class="primary"
+              :to="'/meetups/edit-meetup/' + id"
+            >
+              Edit Meetup
+            </v-btn>
+            <v-btn
+              v-if="userIsCreator"
+              class="primary"
+              :to="'/meetups/edit-meetupdatetime/' + id"
+            >
+              Edit Date and Time</v-btn
+            >
           </v-card-actions>
 
           <v-expand-transition>
@@ -76,19 +84,46 @@ export default {
       return this.$store.getters.loading;
     },
     userIsCreator() {
-      if(!this.userIsAuthenticated){
+      if (!this.userIsAuthenticated) {
         return false;
       }
       return this.$store.getters.user.id === this.meetup.creatorId;
     },
-    userIsAuthenticated(){
-      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-    }
+    userIsAuthenticated() {
+      return (
+        this.$store.getters.user !== null &&
+        this.$store.getters.user !== undefined
+      );
+    },
+    userIsRegistered() {
+      return (
+        this.$store.getters.user.registeredMeetups.findIndex((meetupId) => {
+          return meetupId === this.$route.params.id;
+        }) >= 0
+      );
+    },
   },
-  methods:{
-     onLoadMeetup (id) {
-        this.$router.push('/meetups/edit-meetup/' + id)
+  methods: {
+    onLoadMeetup(id) {
+      this.$router.push("/meetups/edit-meetup/" + id);
+    },
+    registerUser() {
+      if (this.userIsRegistered) {
+        this.$store.dispatch("unRegisterUser", this.id).then(() => {
+          console.log("Current user", this.$store.getters.user);
+         
+        });
+      } else {
+        this.$store.dispatch("registerUser", this.id).then(() => {
+          console.log("Current user", this.$store.getters.user);
+        });
       }
-  }
+    },
+    
+  },
+  
+  created(){
+      console.log('Trenutni user:', this.$store.getters.user);
+    }
 };
 </script>

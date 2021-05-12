@@ -7,12 +7,15 @@ import vuetify from './plugins/vuetify';
 import "core-js";
 import "regenerator-runtime/runtime";
 import DateFilter from './filters/filter';
-import EditMeetup from './components/Meetup/EditMeetup.vue';
+
+import Register from './components/Meetup/Register.vue';
 
 Vue.config.productionTip = false;
 
 Vue.filter('date', DateFilter);
-Vue.component('edit-meetup', EditMeetup);
+
+Vue.component('register-meetup', Register);
+
 
 firebase.initializeApp({
   apiKey: "AIzaSyARrWz81xZH_I9urxA6MSdin5_wysYwOk4",
@@ -30,4 +33,8 @@ new Vue({
   store,
   vuetify,
   render: h => h(App),
+ beforeUpdate(){
+    this.$store.dispatch('getUserRegistrations');
+  }
+  
 }).$mount("#app");
