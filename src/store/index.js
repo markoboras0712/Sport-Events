@@ -213,6 +213,7 @@ export default new Vuex.Store({
         
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
+          localStorage.setItem("userId", result.data.localId);
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
@@ -242,7 +243,7 @@ export default new Vuex.Store({
           context.commit('SET_LOADING',false);
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
-         
+          localStorage.setItem("userId", result.data.localId);
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
@@ -264,7 +265,23 @@ export default new Vuex.Store({
     },
     clearError(context){
       context.commit('CLEAR_ERROR');
+    }, 
+    autoLogin(context){
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if(token && userId){
+        const newUser = {
+          id: userId,
+          registeredMeetups: [],
+          fbKeys : {}
+        };
+        
+        context.commit("ADD_USER", newUser);
+        context.commit("SET_TOKEN", token);
+      }
     }
+    
   },
   getters: {
     meetups(state) {
@@ -288,6 +305,9 @@ export default new Vuex.Store({
     },
     error(state){
       return state.error;
+    },
+    token(state){
+      return state.token;
     }
   },
 });

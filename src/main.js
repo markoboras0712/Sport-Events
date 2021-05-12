@@ -35,6 +35,9 @@ new Vue({
   render: h => h(App),
  beforeUpdate(){
     this.$store.dispatch('getUserRegistrations');
+  },
+  created(){
+    this.$store.dispatch('autoLogin');
   }
   
 }).$mount("#app");
