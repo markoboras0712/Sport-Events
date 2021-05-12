@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import "core-js";
+import Cookie from "js-cookie";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -129,19 +130,19 @@ export default new Vuex.Store({
       .then((result)=> {
         const fetchedMeetups = [];
         const fbKeys = {};
-        console.log(result.data);
+        
           for (const key in result.data) {
             fetchedMeetups.push(result.data[key].id);
             
             fbKeys[result.data[key].id] =  key
-            console.log('Keyevi',fbKeys)
+            
           }
           const updatedUser = {
             id : context.getters.user.id,
             registeredMeetups : fetchedMeetups,
             fbKeys : fbKeys
           };
-          console.log('updatedUser', updatedUser);
+          
           context.commit('SET_LOADING',false);
           context.commit('ADD_USER', updatedUser);
           
@@ -187,8 +188,8 @@ export default new Vuex.Store({
           editedMeetup
         )
         .then((data) => {
+         
           console.log(data);
-          
           context.commit('SET_LOADING',false);
           context.commit("EDIT_MEETUP", payload);
         })
@@ -210,9 +211,13 @@ export default new Vuex.Store({
         )
         .then((result) => {
           context.commit('SET_LOADING',false);
-        
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
+          localStorage.setItem("tokenExpiration" , 
+          new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000);
+          Cookie.set("jwt", result.data.idToken);
+          Cookie.set("expirationDate", new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000)
+                        
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
@@ -239,10 +244,15 @@ export default new Vuex.Store({
           }
         )
         .then((result) => {
+          console.log(result);
           context.commit('SET_LOADING',false);
           context.commit("SET_TOKEN", result.data.idToken);
           localStorage.setItem("token", result.data.idToken);
-         
+          localStorage.setItem("tokenExpiration" , 
+          new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000);
+          Cookie.set("jwt", result.data.idToken);
+          Cookie.set("expirationDate", new Date().getTime() + Number.parseInt(result.data.expiresIn) * 1000)
+                        
           const newUser = {
             id: result.data.localId,
             registeredMeetups: [],
@@ -257,6 +267,36 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
+    initAuth(vuexContext,req){
+      let token;
+      let expirationDate;
+      console.log(vuexContext);
+      if(req){
+          if(!req.headers.cookie){
+              return;
+          }
+          const jwtCookie = req.headers.cookie.split(';')
+          .find(c=> c.trim().startsWith("jwt="));
+          if(!jwtCookie){
+              return;
+          }
+          token = jwtCookie.split("=")[1];
+          expirationDate = req.headers.cookie.split(';')
+          .find(c=> c.trim().startsWith("expirationDate=") ).split("=")[1];
+      }else {
+          token = localStorage.getItem("token");
+       expirationDate = localStorage.getItem("tokenExpiration");
+      }
+       
+
+      if(new Date().getTime() > +expirationDate || !token){
+          console.log("No token or invalid token");
+          vuexContext.dispatch("logout");
+          return;
+      }
+      
+      vuexContext.commit("SET_TOKEN", token);
+  },
     logout(context) {
       context.commit("CLEAR_TOKEN");
       localStorage.removeItem("token");
